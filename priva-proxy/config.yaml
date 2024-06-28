@@ -10,11 +10,12 @@ arch:
   - i386
 startup: services
 boot: auto
+init: false
 ports:
   3000/tcp: 3000
 options:
-  email: The email address for logging into the Priva Operator portal
-  password: The password for logging into the Priva Operator portal
+  email:
+  password:
 schema:
   email: email
   password: password
