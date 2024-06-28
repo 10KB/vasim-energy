@@ -1,6 +1,5 @@
-import { Page, chromium } from 'playwright-chromium';
+import { BrowserContext, Page, chromium } from 'playwright-chromium';
 import { logger } from '../utils/logger';
-import { isPresent } from '../utils/is-present';
 import { extractNumber } from '../utils/extract-number';
 
 const step = async <C extends (page: Page) => Promise<T>, T>(
@@ -46,10 +45,12 @@ export const authenticatedSession = async () => {
 };
 
 export const scrapeData = async (
-  page: Page,
+  context: BrowserContext,
   section: string,
   fields: string[]
 ): Promise<string[] | undefined> => {
+  const page = await context.newPage();
+
   return step(page, 'scrape', `Scraping ${fields.join(', ')} from ${section}`, async (p) => {
     await p.goto(
       `https://operator.priva.com/scheme/e617c404-102f-4558-97a4-05f2b564dd40/p84628/${section}`
@@ -61,21 +62,9 @@ export const scrapeData = async (
       const element = await p.locator(`g[data-id="${field}"] > text.scheme-datapoint__text`);
       const value = await element.innerHTML();
       logger.debug(`Found ${value} for ${field}`);
-      results.push(value);
+      results.push(extractNumber(value));
     }
 
     return results;
   });
-};
-
-export const maybeScrape = async (
-  page: Page,
-  section: string | undefined,
-  fields: Array<string | undefined>
-) => {
-  const presentFields = fields.filter(isPresent);
-  if (!section || !presentFields) return null;
-
-  const data = await scrapeData(page, section, presentFields);
-  return data ? data.map(extractNumber) : null;
 };
