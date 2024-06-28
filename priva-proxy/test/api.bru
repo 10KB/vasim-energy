@@ -1,0 +1,25 @@
+meta {
+  name: api
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "electricitySection": "buildingsection26",
+    "electricityField": "e23cc16b-2052-478d-8b46-50cc061d4110",
+    "waterSection": "buildingsection35",
+    "waterField": "c63398a3-d57a-4208-9894-d65ae83babf4",
+    "energySection": "buildingsection38",
+    "energyField": "f56441d7-9786-41c2-a605-6e23c048a08c",
+    "ventingSection": "module230",
+    "returnTemperatureField": "fa808874-0b13-4be1-be90-fc55a8f39a65",
+    "flowTemperatureField": "8de59e2f-a77d-4b02-bc5e-4dc844ea4bce"
+  }
+}

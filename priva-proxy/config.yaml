@@ -1,0 +1,18 @@
+name: Priva Proxy
+version: v0.0.1
+slug: priva-proxy
+description: Scrape Vasim Energy usage from Priva Operator portal
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+startup: application
+homeassistant_api: true
+options:
+  email: The email address for logging into the Priva Operator portal
+  password: The password for logging into the Priva Operator portal
+schema:
+  email: email
+  password: password

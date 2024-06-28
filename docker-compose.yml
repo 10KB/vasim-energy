@@ -1,0 +1,14 @@
+services:
+  proxy:
+    build:
+      context: ./priva-proxy
+      args:
+        BUILD_FROM: homeassistant/amd64-base:latest
+    command: yarn dev
+    entrypoint: []
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./priva-proxy:/app
