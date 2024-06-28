@@ -1,5 +1,5 @@
 name: Priva Proxy
-version: v0.0.4
+version: v0.0.5
 slug: priva-proxy
 description: Scrape Vasim Energy usage from Priva Operator portal
 arch:
