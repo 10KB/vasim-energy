@@ -1,4 +1,5 @@
 import { BrowserContext, Page, chromium } from 'playwright-chromium';
+import pRetry from 'p-retry';
 import { logger } from '../utils/logger';
 import { extractNumber } from '../utils/extract-number';
 
@@ -56,13 +57,28 @@ export const scrapeData = async (
       `https://operator.priva.com/scheme/e617c404-102f-4558-97a4-05f2b564dd40/p84628/${section}`
     );
     await p.waitForTimeout(3000);
-    const results = [];
+    const results: number[] = [];
 
     for (const field of fields) {
-      const element = await p.locator(`g[data-id="${field}"] > text.scheme-datapoint__text`);
-      const value = await element.innerHTML();
-      logger.debug(`Found ${value} for ${field}`);
-      results.push(extractNumber(value));
+      const scrape = async () => {
+        const element = await p.locator(`g[data-id="${field}"] > text.scheme-datapoint__text`);
+        const value = await element.innerHTML();
+        if (!value || value === '-') {
+          await p.waitForTimeout(3000);
+          throw Error('Value not found');
+        }
+        logger.debug(`Found ${value} for ${field}`);
+        results.push(extractNumber(value));
+      };
+
+      await pRetry(scrape, {
+        retries: 5,
+        onFailedAttempt: (error) => {
+          logger.debug(
+            `Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`
+          );
+        },
+      });
     }
 
     return results;
