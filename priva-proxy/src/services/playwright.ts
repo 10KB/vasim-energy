@@ -72,7 +72,6 @@ export const scrapeData = async (
       };
 
       await pRetry(scrape, {
-        retries: 5,
         onFailedAttempt: (error) => {
           logger.debug(
             `Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`
