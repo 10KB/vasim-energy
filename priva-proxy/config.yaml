@@ -2,6 +2,7 @@ name: Priva Proxy
 version: v0.1.5
 slug: priva-proxy
 description: Scrape Vasim Energy usage from Priva Operator portal
+url: https://github.com/10KB/vasim-energy/
 arch:
   - aarch64
   - amd64
