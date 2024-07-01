@@ -48,7 +48,7 @@ export const scrapeData = async (
   context: BrowserContext,
   section: string,
   fields: string[]
-): Promise<string[] | undefined> => {
+): Promise<number[] | undefined> => {
   const page = await context.newPage();
 
   return step(page, 'scrape', `Scraping ${fields.join(', ')} from ${section}`, async (p) => {
