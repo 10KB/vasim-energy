@@ -21,6 +21,8 @@ app.use(bodyParser.json());
 app.post(
   '/api',
   asyncHandler<ParamsDictionary, ResponseBody, RequestBody>(async ({ body }, response) => {
+    logger.debug(`POST /api with payload ${JSON.stringify(body)}`);
+
     const { browser, context } = await authenticatedSession();
 
     const result = await Promise.all(
