@@ -8,5 +8,5 @@ export const logger = createLogger({
     format.align(),
     format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`)
   ),
-  transports: [new transports.Console({ level: 'debug' })],
+  transports: [new transports.Console({ level: process.env.LOG_LEVEL })],
 });

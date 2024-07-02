@@ -67,7 +67,7 @@ export const scrapeData = async (
           await p.waitForTimeout(3000);
           throw Error('Value not found');
         }
-        logger.debug(`Found ${value} for ${field}`);
+        logger.info(`Found ${value} for ${field}`);
         results.push(extractNumber(value));
       };
 

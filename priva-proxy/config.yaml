@@ -15,8 +15,10 @@ init: false
 ports:
   3000/tcp: 3000
 options:
-  email:
-  password:
+  email: null
+  password: null
+  log_level: info
 schema:
   email: email
   password: password
+  log_level: list(info|http|debug)

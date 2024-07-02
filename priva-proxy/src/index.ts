@@ -2,6 +2,7 @@ import express from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import bodyParser from 'body-parser';
 import asyncHandler from 'express-async-handler';
+import morgan from 'morgan';
 import { authenticatedSession, scrapeData } from './services/playwright';
 import { logger } from './utils/logger';
 
@@ -17,11 +18,12 @@ type ResponseBody = Record<string, string[]>;
 
 const app = express();
 app.use(bodyParser.json());
+app.use(morgan('dev', { stream: { write: (message) => logger.http(message) } }));
 
 app.post(
   '/api',
   asyncHandler<ParamsDictionary, ResponseBody, RequestBody>(async ({ body }, response) => {
-    logger.debug(`POST /api with payload ${JSON.stringify(body)}`);
+    logger.debug(`POST body payload ${JSON.stringify(body)}`);
 
     const { browser, context } = await authenticatedSession();
 
@@ -40,5 +42,5 @@ app.post(
 );
 
 app.listen(3000, () => {
-  logger.info('Priva proxy listening on port 3000');
+  logger.info('Priva Proxy listening on port 3000');
 });
