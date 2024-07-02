@@ -24,7 +24,7 @@ Example payload:
       "e23cc16b-2052-478d-8b46-50cc061d4110"
     ]
   },
-  "venting": {
+  "ventilation": {
     "section": "module230",
     "fields": [
       "fa808874-0b13-4be1-be90-fc55a8f39a65",
@@ -49,7 +49,7 @@ rest:
             "e23cc16b-2052-478d-8b46-50cc061d4110"
           ]
         },
-        "venting": {
+        "ventilation": {
           "section": "module230",
           "fields": [
             "fa808874-0b13-4be1-be90-fc55a8f39a65",
@@ -61,19 +61,22 @@ rest:
     timeout: 60
     sensor:
       - name: "Electricity total"
+        unique_id: electricity_total
         value_template: "{{ value_json.electricity[0] }}"
         device_class: energy
         state_class: total
         unit_of_measurement: kWh
 
       - name: "Return temperature"
-        value_template: "{{ value_json.venting[0] }}"
+        unique_id: ventilation_return_temperature
+        value_template: "{{ value_json.ventilation[0] }}"
         device_class: temperature
         state_class: measurement
         unit_of_measurement: °C
 
       - name: "Flow temperature"
-        value_template: "{{ value_json.venting[1] }}"
+        unique_id: ventilation_flow_temperature
+        value_template: "{{ value_json.ventilation[1] }}"
         device_class: temperature
         state_class: measurement
         unit_of_measurement: °C
