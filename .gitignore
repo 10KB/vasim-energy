@@ -1,4 +1,5 @@
 dist
 node_modules/
 .env
-priva-proxy/log
+priva-proxy/logs
+priva-proxy/.auth.json

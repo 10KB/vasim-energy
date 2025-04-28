@@ -2,6 +2,7 @@ import { BrowserContext, Page, chromium } from 'playwright-chromium';
 import pRetry from 'p-retry';
 import { logger } from '../utils/logger';
 import { extractNumber } from '../utils/extract-number';
+import fs from 'node:fs';
 
 const step = async <C extends (page: Page) => Promise<T>, T>(
   page: Page,
@@ -21,10 +22,40 @@ const step = async <C extends (page: Page) => Promise<T>, T>(
   }
 };
 
+const AUTH_FILE_PATH = './.auth.json';
+
 export const authenticatedSession = async () => {
   logger.debug('Starting Chromium');
   const browser = await chromium.launch({ executablePath: '/usr/bin/chromium-browser' });
-  const context = await browser.newContext();
+  let context: BrowserContext;
+
+  if (fs.existsSync(AUTH_FILE_PATH)) {
+    logger.debug('Found stored authentication, attempting to use it');
+    context = await browser.newContext({ storageState: AUTH_FILE_PATH });
+
+    const page = await context.newPage();
+    try {
+      await page.goto('https://operator.priva.com');
+      await page.waitForLoadState('networkidle');
+
+      const isLoggedIn = await page.getByText('Verbruiksregistratie Elektra').isVisible()
+        .catch(() => false);
+
+      if (isLoggedIn) {
+        logger.debug('Stored authentication is valid');
+        return { browser, context, page };
+      }
+
+      logger.debug('Stored authentication expired, logging in again');
+      await page.close();
+    } catch (error) {
+      logger.error('Error verifying authentication, will perform fresh login');
+      logger.error(error);
+      await page.close();
+    }
+  }
+
+  context = await browser.newContext();
   const page = await context.newPage();
 
   await step(page, 'login', 'Loading login page', async (p) => {
@@ -41,6 +72,8 @@ export const authenticatedSession = async () => {
   await step(page, 'submit', 'Submitting login form', async (p) => {
     await p.waitForURL('https://operator.priva.com/**');
   });
+
+  await page.context().storageState({ path: AUTH_FILE_PATH });
 
   return { browser, context, page };
 };
